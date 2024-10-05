@@ -1,0 +1,8 @@
+#CREAR ENV VIRTUAL
+python -m venv venv
+
+#ACTIVATE ENV
+.\venv\Scripts\activate
+pip install -r requirements.txt
+
+
