@@ -35,16 +35,33 @@ class db_habdler:
             current_time = time.localtime()
             formatted_time = time.strftime("%d-%m-%Y %H:%M:%S", current_time)
             print(formatted_time)
-            response = self.supabase.table(self.tabla).update({"saldo":money, "ultima_entrada": str(formatted_time)}).eq("uid", rfid).execute()
+            response = self.supabase.table(self.tabla).update({"saldo":money, "ultima_entrada": str(formatted_time), "activa": True}).eq("uid", rfid).execute()
             print(response.data)
-            
-            
-            
             return response.data != []
         else:
             print("Not enough money")
             return False
-        
+    def exit(self, rfid:str):
+        flag = self.does_rfid_edxis(rfid)
+        #if the rfid exists
+        if flag:
+            #check if activa = True
+            response = self.supabase.table(self.tabla).select("activa").eq("uid", rfid).execute()
+            adentro = response.data[0].get("activa",None)     
+            if  adentro:
+                #get current time in day, month, year, hour, minute, second
+                current_time = time.localtime()
+                formatted_time = time.strftime("%d-%m-%Y %H:%M:%S", current_time)
+                print(formatted_time)
+                response = self.supabase.table(self.tabla).update({"ultima_salida": str(formatted_time), "activa": False}).eq("uid", rfid).execute()
+                print(response.data)
+                return response.data != []
+            else:
+                print("User is not inside")
+                return False
+        else:
+            print("User does not exist")
+            return False  
     
             
     def login(self, name:str, password:str):
@@ -87,3 +104,4 @@ mock_user = {
     "model":"test"
 }
 print(test.add_new_user(mock_user))
+print(test.exit("nhjh2h3jh"))
