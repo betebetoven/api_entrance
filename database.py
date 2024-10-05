@@ -34,13 +34,22 @@ class db_habdler:
             #get current time in day, month, year, hour, minute, second
             current_time = time.localtime()
             formatted_time = time.strftime("%d-%m-%Y %H:%M:%S", current_time)
+            user_id = self.supabase.table(self.tabla).select("id").eq("uid", rfid).execute().data[0].get("id",None)
             print(formatted_time)
             response = self.supabase.table(self.tabla).update({"saldo":money, "ultima_entrada": str(formatted_time), "activa": True}).eq("uid", rfid).execute()
+            try:
+                self.supabase.table("historial").insert([{"id":int(user_id), "fecha":str(formatted_time),"accion":"entrada", "user_id":int(user_id)}]).execute()
+                print("Historial updated")
+            except Exception as e:
+                print(e)
             print(response.data)
             return response.data != []
         else:
             print("Not enough money")
             return False
+        
+        
+        
     def exit(self, rfid:str):
         flag = self.does_rfid_edxis(rfid)
         #if the rfid exists
@@ -54,7 +63,14 @@ class db_habdler:
                 formatted_time = time.strftime("%d-%m-%Y %H:%M:%S", current_time)
                 print(formatted_time)
                 response = self.supabase.table(self.tabla).update({"ultima_salida": str(formatted_time), "activa": False}).eq("uid", rfid).execute()
+                user_id = self.supabase.table(self.tabla).select("id").eq("uid", rfid).execute().data[0].get("id",None)
                 print(response.data)
+                try:
+                    self.supabase.table("historial").insert([{"id":int(user_id), "fecha":str(formatted_time),"accion":"salida", "user_id":int(user_id)}]).execute()
+                    print("Historial updated")
+                except Exception as e:
+                    print(e)
+                
                 return response.data != []
             else:
                 print("User is not inside")
@@ -93,9 +109,9 @@ class db_habdler:
         
 test = db_habdler()
 print(test.get_all_users())
-print(test.does_rfid_edxis("nhjh2h3jh"))
+print(test.does_rfid_edxis("33AF1B12"))
 print(test.login("Admin", "Admin"))
-print(test.entrance("nhjh2h3jh"))
+print(test.entrance("33AF1B12"))
 mock_user = {
     "uid":"betobeto123",
     "nombre":"test",
@@ -104,4 +120,4 @@ mock_user = {
     "model":"test"
 }
 print(test.add_new_user(mock_user))
-print(test.exit("nhjh2h3jh"))
+print(test.exit("33AF1B12"))
