@@ -114,8 +114,8 @@ class db_habdler:
         
         
         
-test = db_habdler()
-"""print(test.get_all_users())
+"""test = db_habdler()
+print(test.get_all_users())
 print(test.does_rfid_edxis("33AF1B12"))
 print(test.login("Admin", "Admin"))
 print(test.entrance("33AF1B12"))
@@ -127,6 +127,6 @@ mock_user = {
     "model":"test"
 }
 print(test.add_new_user(mock_user))
-print(test.exit("33AF1B12"))"""
-print(test.entrance("33AF1B12"))
 print(test.exit("33AF1B12"))
+print(test.entrance("33AF1B12"))
+print(test.exit("33AF1B12"))"""
