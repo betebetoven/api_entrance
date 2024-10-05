@@ -1,0 +1,4 @@
+fastapi==0.104.1
+pydantic==2.4.2
+pyserial==3.5
+supabase==2.7.4
